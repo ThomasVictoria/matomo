@@ -1,0 +1,25 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "matomo.fullname" . }}-containers
+  labels:
+{{ include "matomo.labels" . | indent 4 }}
+  {{- with .Values.volumeClaimContainers.annotations }}
+  annotations:
+  {{- range $key, $value := . }}
+    {{ $key }}: {{ $value }}
+  {{- end }}
+  {{- end }}
+spec:
+  {{- if .Values.volumeClaimContainers.storageClass }}
+  storageClassName: {{ .Values.volumeClaimContainers.storageClass | quote }}
+  {{- end }}
+
+  accessModes:
+  {{- range .Values.volumeClaimContainers.accessModes }}
+    - {{ . | quote }}
+  {{- end }}
+
+  resources:
+    requests:
+      storage: {{ .Values.volumeClaimContainers.size | quote }}
